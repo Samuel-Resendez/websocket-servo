@@ -17,9 +17,9 @@ class IndexHandler(tornado.web.RequestHandler):
         longitude = self.get_argument('longitude','No Data Received')
         latitude = self.get_argument('latitude', 'No Data Received')
 
-
+        dat_dict = {'longitude':longitude,'latitude':latitude}
         for c in clients:
-            c.write_message(str([longitude,latitude]))
+            c.write_message(str(dat_dict))
 
         self.finish()
 
