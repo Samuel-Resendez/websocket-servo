@@ -43,11 +43,11 @@ class leapHandler(tornado.web.RequestHandler):
         if zoomFac < 0:
             isPostiive = False
 
-        zoomFac = 1 / (1 + 3*math.exp(-.01*zoomFac))
+        zoomFac = 3 / (1 + 3*math.exp(-.01*abs(zoomFac)))
         if isPostiive:
-            zoomFac = 1 + zoomFac
+            zoomFac = zoomFac
         else:
-            zoomFac = 1 - zoomFac
+            zoomFac = - zoomFac
         print(zoomFac)
         dat_dict = {'zoomFactor':zoomFac}
         for c in clients:
