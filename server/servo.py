@@ -20,7 +20,7 @@ class IndexHandler(tornado.web.RequestHandler):
 
         dat_dict = {"longitude":longitude,"latitude":latitude}
         for c in clients:
-            c.write_message(json.dumps(dat_dict)))
+            c.write_message(json.dumps(dat_dict))
 
         self.finish()
 
