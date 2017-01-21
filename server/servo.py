@@ -39,8 +39,8 @@ class leapHandler(tornado.web.RequestHandler):
         isZoom = 1 / (1 + 3*math.exp(-.01*isZoom))
         print(isZoom)
         dat_dict = {'zoomFacter':isZoom }
-        #for c in clients:
-        #    c.write_message(json.dumps(dat_dict))
+        for c in clients:
+            c.write_message(json.dumps(dat_dict))
 
 
 class EchoWebSocket(tornado.websocket.WebSocketHandler):
