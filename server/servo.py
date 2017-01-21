@@ -6,7 +6,7 @@ import tornado.websocket
 
 from tornado.options import define, options, parse_command_line
 
-define("port", default=8888, help="run on the given port", type=int)
+define("port", default=5000, help="run on the given port", type=int)
 
 clients= []
 
@@ -14,12 +14,12 @@ class IndexHandler(tornado.web.RequestHandler):
 
     @tornado.web.asynchronous
     def post(self):
-        long = self.get_argument('longitude','No Data Received')
-        lat = self.get_argument('latitude', 'No Data Received')
+        longitude = self.get_argument('longitude','No Data Received')
+        latitude = self.get_argument('latitude', 'No Data Received')
 
 
         for c in clients:
-            c.write_message(str((long, lat)))
+            c.write_message(str([longitude,latitude]))
 
         self.finish()
 
@@ -44,7 +44,8 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
         self.write_message(u"You said: " + message)
 
     def on_close(self):
-
+        if self in clients:
+            clients.remove(self)
         print("WebSocket closed")
 
 if __name__ == '__main__':
