@@ -3,7 +3,7 @@
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
-import json
+import json, math
 
 from tornado.options import define, options, parse_command_line
 
@@ -28,6 +28,19 @@ class IndexHandler(tornado.web.RequestHandler):
     def get(self):
 
         self.render('index.html')
+
+
+class leapHandler(tornado.web.RequestHandler):
+
+    @tornado.web.asynchronous
+    def post(self):
+        isZoom = self.get_argument('zoomFactor','No Data Received')
+        isZoom = float(isZoom)
+        isZoom = 1 / (1 + 3*math.exp(-.01*isZoom))
+        print(isZoom)
+        dat_dict = {'zoomFacter':isZoom }
+        #for c in clients:
+        #    c.write_message(json.dumps(dat_dict))
 
 
 class EchoWebSocket(tornado.websocket.WebSocketHandler):
@@ -55,6 +68,7 @@ if __name__ == '__main__':
     app = tornado.web.Application([
         (r'/', IndexHandler),
         (r'/websocket', EchoWebSocket),
+        (r'/Leap',leapHandler)
     ])
     app.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
