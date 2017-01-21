@@ -34,11 +34,19 @@ class leapHandler(tornado.web.RequestHandler):
 
     @tornado.web.asynchronous
     def post(self):
-        isZoom = self.get_argument('zoomFactor','No Data Received')
-        isZoom = float(isZoom)
-        isZoom = 1 / (1 + 3*math.exp(-.01*isZoom))
-        print(isZoom)
-        dat_dict = {'zoomFacter':isZoom }
+        zoomFac = self.get_argument('zoomFactor','No Data Received')
+        zoomFac = float(zoomFac)
+        isPostiive = True
+        if zoomFac < 0:
+            isPostiive = False
+
+        zoomFac = 1 / (1 + 3*math.exp(-.01*zoomFac))
+        if isPostiive:
+            zoomFac = 1 + zoomFac
+        else:
+            zoomFac = 1 - zoomFac
+        print(zoomFac)
+        dat_dict = {'zoomFacter':zoomFac}
         for c in clients:
             c.write_message(json.dumps(dat_dict))
 
