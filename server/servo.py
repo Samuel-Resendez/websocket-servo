@@ -35,6 +35,9 @@ class leapHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     def post(self):
         zoomFac = self.get_argument('zoomFactor','No Data Received')
+        if zoomFac == 'No Data Received':
+            self.write("Post Failed")
+            self.finish()
         zoomFac = float(zoomFac)
         isPostiive = True
         if zoomFac < 0:
@@ -49,6 +52,9 @@ class leapHandler(tornado.web.RequestHandler):
         dat_dict = {'zoomFactor':zoomFac}
         for c in clients:
             c.write_message(json.dumps(dat_dict))
+
+        self.write(200)
+        self.finish()
 
 
 class EchoWebSocket(tornado.websocket.WebSocketHandler):
