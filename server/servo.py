@@ -46,7 +46,7 @@ class leapHandler(tornado.web.RequestHandler):
         else:
             zoomFac = 1 - zoomFac
         print(zoomFac)
-        dat_dict = {'zoomFacter':zoomFac}
+        dat_dict = {'zoomFactor':zoomFac}
         for c in clients:
             c.write_message(json.dumps(dat_dict))
 
