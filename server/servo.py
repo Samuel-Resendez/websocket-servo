@@ -17,7 +17,6 @@ class IndexHandler(tornado.web.RequestHandler):
         long = self.get_argument('longitude','No Data Received')
         lat = self.get_argument('latitude', 'No Data Received')
 
-        print(int(long), int(lat))
 
         for c in clients:
             c.write_message(str((long, lat)))
