@@ -3,6 +3,7 @@
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
+import json
 
 from tornado.options import define, options, parse_command_line
 
@@ -19,7 +20,7 @@ class IndexHandler(tornado.web.RequestHandler):
 
         dat_dict = {"longitude":longitude,"latitude":latitude}
         for c in clients:
-            c.write_message(str(dat_dict))
+            c.write_message(json.dumps(dat_dict)))
 
         self.finish()
 
