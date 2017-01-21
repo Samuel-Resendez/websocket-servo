@@ -1,1 +1,1 @@
-web: python server/servo.py --port=5000
+web: gunicorn server/servo:app
