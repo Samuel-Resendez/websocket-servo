@@ -1,1 +1,1 @@
-web: gunicorn servo:app
+web: python server/servo.py --port=$PORT

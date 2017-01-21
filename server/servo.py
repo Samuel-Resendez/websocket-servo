@@ -48,13 +48,12 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
 
         print("WebSocket closed")
 
-
-app = tornado.web.Application([
-    (r'/', IndexHandler),
-    (r'/websocket', EchoWebSocket),
-])
-
 if __name__ == '__main__':
     parse_command_line()
+
+    app = tornado.web.Application([
+        (r'/', IndexHandler),
+        (r'/websocket', EchoWebSocket),
+    ])
     app.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
