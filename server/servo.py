@@ -10,7 +10,8 @@ from tornado.options import define, options, parse_command_line
 define("port", default=5000, help="run on the given port", type=int)
 
 clients= [] #All clients that are currently connected
-curr_data_patterns = []
+curr_data_patterns = [0,0,0,0]
+
 
 
 class IndexHandler(tornado.web.RequestHandler):
@@ -50,18 +51,18 @@ class dataPatternHandler(tornado.web.RequestHandler):
             self.write("Error: 500")
             self.finish()
         else:
-            if pattern not in curr_data_patterns:
-                curr_data_patterns.append(curr_data_patterns)
-                #TODO: Send update to client
+            if curr_data_patterns[pattern-1] == 0:
+                curr_data_patterns[pattern-1] = 1
             else:
-                curr_data_patterns.remove(pattern)
-                #TODO: Send update to client
+                curr_data_patterns[pattern-1] = 0
+
+            dat_dict = {'bin':curr_data_patterns}
+            for c in clients:
+                c.write_message(json.dumps(dat_dict))
 
 
         self.write("Succes:: 200")
         self.finish()
-
-
 
 
 class leapRotationHandler(tornado.web.RequestHandler):
@@ -104,56 +105,6 @@ class alexaPositionDeltaHandler(tornado.web.RequestHandler):
             self.write("Success: 200")
             self.finish()
 
-class leapPositionHandler(tornado.web.RequestHandler):
-
-
-    def post(self):
-        position = self.get_argument('position','No Data Received')
-        if position == 'No Data Received':
-            self.write("Error: 500")
-            self.finish()
-        else:
-            position = int((7/225)*int(position) + (85/9))
-            if position > 25:
-                position = 25
-
-            dat_dict = {'zoomValue':position}
-            for c in clients:
-                c.write_message(json.dumps(dat_dict))
-            self.write("200")
-            self.finish()
-
-
-class LeapHorizontalHandler(tornado.web.RequestHandler):
-
-
-    def get(self):
-        self.write("""
-        <h2> POST request to move map horizontally with Leap </h2>
-        <p>
-        <li> params: {'dir_vector': Vector} </li>
-        <li> returns: 500 or 200 </li>
-        """)
-        self.finish()
-    def post(self):
-        vector = self.get_argument('dir_vector','No Data Received')
-        if vector == 'No Data Received':
-            self.write("Error: 500")
-            self.finish()
-        else:
-
-            #TODO: Parse vector into input
-            magnitude = 0
-            direction = 0
-
-            dat_dict = {'direction':direction,'magnitude':magnitude}
-            for c in clients:
-                c.write_message(json.dumps(dat_dict))
-
-            self.write("Success: 200")
-            self.finish()
-
-
 class MapStyleHandler(tornado.web.RequestHandler):
 
     def post(self):
@@ -177,9 +128,27 @@ class MapStyleHandler(tornado.web.RequestHandler):
         """)
         self.finish()
 
+class LeapWebSocket(tornado.websocket.WebSocketHandler):
+
+    def check_origin(self, origin):
+        return True
+
+    def open(self):
+        if self not in clients:
+            clients.append(self)
+        print("Websocket Open")
 
 
+    def on_message(self, message):
+        print(message)
+        print(len(clients))
+        for c in clients:
+            c.write_message(json.dumps(message))
 
+    def on_close(self):
+        if self in clients:
+            clients.remove(self)
+        print("Websocket Closed")
 
 
 
@@ -191,8 +160,7 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
     def open(self):
         if self not in clients:
             clients.append(self)
-
-        print("WebSocket opened")
+        print("WebSocket opened on /websocket")
 
     def on_message(self, message):
         self.write_message(u"You said: " + message)
@@ -209,9 +177,8 @@ if __name__ == '__main__':
         (r'/', IndexHandler),
         (r'/websocket', EchoWebSocket),
         (r'/Leap',leapRotationHandler),
-        (r'/LeapPosition',leapPositionHandler),
+        (r'/LeapPosition',LeapWebSocket),
         (r'/alexaPosition',alexaPositionDeltaHandler),
-        (r'/LeapHorizontal',LeapHorizontalHandler),
         (r'/setDataPattern',dataPatternHandler),
         (r'/setMapStyle',MapStyleHandler)
     ])
