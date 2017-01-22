@@ -52,6 +52,10 @@ class dataPatternHandler(tornado.web.RequestHandler):
             self.write("Error: 500")
             self.finish()
         else:
+            if pattern > 3:
+                pattern = 3
+            elif pattern < 0:
+                pattern = 0
             if curr_data_patterns[pattern-1] == 0:
                 curr_data_patterns[pattern-1] = 1
             else:
@@ -114,6 +118,10 @@ class MapStyleHandler(tornado.web.RequestHandler):
             self.write("Error: 500")
             self.finish()
         else:
+            if map_style < 0:
+                map_style = 0
+            elif map_style > 2:
+                map_style = 2
             dat_dict = {"map_style":map_style}
             for c in clients:
                 c.write_message(json.dumps(dat_dict))
