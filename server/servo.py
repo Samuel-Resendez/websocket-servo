@@ -52,6 +52,7 @@ class dataPatternHandler(tornado.web.RequestHandler):
             self.write("Error: 500")
             self.finish()
         else:
+            pattern = int(pattern)
             if pattern > 3:
                 pattern = 3
             elif pattern < 0:
