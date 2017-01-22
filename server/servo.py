@@ -16,6 +16,14 @@ curr_data_patterns = [0,0,0,0]
 
 
 
+class syncHandler(tornado.web.RequestHandler):
+
+    def get(self):
+        for c in clients:
+            c.write_message("sync")
+        self.write("syncHandler endpoint")
+
+
 class IndexHandler(tornado.web.RequestHandler):
 
 
@@ -193,11 +201,12 @@ if __name__ == '__main__':
         (r'/LeapPosition',LeapWebSocket),
         (r'/alexaPosition',alexaPositionDeltaHandler),
         (r'/setDataPattern',dataPatternHandler),
-        (r'/setMapStyle',MapStyleHandler)
+        (r'/setMapStyle',MapStyleHandler),
+        (r'/syncClients',syncHandler),
     ])
 
     app.listen(options.port)
 
     tornado.ioloop.PeriodicCallback(say_hi, 2000).start()
-   
+
     tornado.ioloop.IOLoop.instance().start()
