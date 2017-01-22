@@ -57,6 +57,7 @@ class leapRotationHandler(tornado.web.RequestHandler):
         self.finish()
 class leapPositionHandler(tornado.web.RequestHandler):
 
+
     def post(self):
         position = self.get_argument('position','No Data Received')
         if position == 'No Data Received':
@@ -97,7 +98,7 @@ if __name__ == '__main__':
         (r'/', IndexHandler),
         (r'/websocket', EchoWebSocket),
         (r'/Leap',leapRotationHandler),
-        ('r/LeapPosition',leapPositionHandler)
+        ('r/LeapPosition',leapPositionHandler),
     ])
     app.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
