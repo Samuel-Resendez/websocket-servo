@@ -56,15 +56,13 @@ class leapRotationHandler(tornado.web.RequestHandler):
         self.write(200)
         self.finish()
 class leapPositionHandler(tornado.web.RequestHandler):
-
-
     def post(self):
         position = self.get_argument('position','No Data Received')
         if position == 'No Data Received':
             self.write(500)
             self.finish()
         else:
-            position = (1/25)*position + 9
+            position = (1/25)*int(position) + 9
             dat_dict = {'zoomValue':position}
             for c in clients:
                 c.write_message(json.dumps(dat_dict))
