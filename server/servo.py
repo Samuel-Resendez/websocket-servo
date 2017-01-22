@@ -118,6 +118,7 @@ class MapStyleHandler(tornado.web.RequestHandler):
             self.write("Error: 500")
             self.finish()
         else:
+            map_style = int(map_style)
             if map_style < 0:
                 map_style = 0
             elif map_style > 2:
