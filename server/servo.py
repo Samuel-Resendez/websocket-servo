@@ -63,6 +63,13 @@ class alexaPositionDeltaHandler(tornado.web.RequestHandler):
         if position == 'No Data Received':
             self.write("Error Code: 500")
             self.finish()
+        else:
+            position = int(position)
+            dat_dict = {'zoomFactor':position}
+            for c in clients:
+                c.write_message(json.dumps(dat_dict))
+            self.write("Success: 200")
+            self.finish()
 
 class leapPositionHandler(tornado.web.RequestHandler):
     def post(self):
@@ -109,6 +116,7 @@ if __name__ == '__main__':
         (r'/websocket', EchoWebSocket),
         (r'/Leap',leapRotationHandler),
         (r'/LeapPosition',leapPositionHandler),
+        (r'/alexPosition',alexaPositionDeltaHandler),
     ])
     app.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
