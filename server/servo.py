@@ -179,6 +179,10 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
             clients.remove(self)
         print("WebSocket closed: " + str(len(clients)))
 
+
+def test(self):
+    for c in clients: c.write_message("hi!")
+
 if __name__ == '__main__':
     parse_command_line()
 
@@ -191,5 +195,9 @@ if __name__ == '__main__':
         (r'/setDataPattern',dataPatternHandler),
         (r'/setMapStyle',MapStyleHandler)
     ])
+
+    sched = tornado.ioloop.PeriodicCallback(test, 10000, io_loop=main_loop)
+    sched.start()
+
     app.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
