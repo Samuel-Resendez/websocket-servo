@@ -96,7 +96,7 @@ if __name__ == '__main__':
         (r'/', IndexHandler),
         (r'/websocket', EchoWebSocket),
         (r'/Leap',leapRotationHandler),
-        ('r/LeapPosition',leapPositionHandler),
+        (r'/LeapPosition',leapPositionHandler),
     ])
     app.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
