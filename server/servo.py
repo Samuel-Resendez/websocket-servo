@@ -30,7 +30,7 @@ class IndexHandler(tornado.web.RequestHandler):
         self.render('index.html')
 
 
-class leapHandler(tornado.web.RequestHandler):
+class leapRotationHandler(tornado.web.RequestHandler):
 
     @tornado.web.asynchronous
     def post(self):
@@ -55,6 +55,20 @@ class leapHandler(tornado.web.RequestHandler):
 
         self.write(200)
         self.finish()
+class leapPositionHandler(tornado.web.RequestHandler):
+
+    def post(self):
+        position = self.get_argument('position','No Data Received')
+        if position == 'No Data Received':
+            self.write(500)
+            self.finish()
+        else:
+            position = (1/25)*position + 9
+            dat_dict = {'zoomValue':position}
+            for c in clients:
+                c.write_message(json.dumps(dat_dict))
+            self.write(200)
+            self.finish()
 
 
 class EchoWebSocket(tornado.websocket.WebSocketHandler):
@@ -82,7 +96,8 @@ if __name__ == '__main__':
     app = tornado.web.Application([
         (r'/', IndexHandler),
         (r'/websocket', EchoWebSocket),
-        (r'/Leap',leapHandler)
+        (r'/Leap',leapRotationHandler),
+        ('r/LeapPosition',leapPositionHandler)
     ])
     app.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
