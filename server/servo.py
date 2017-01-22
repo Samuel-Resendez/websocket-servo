@@ -139,10 +139,8 @@ class LeapWebSocket(tornado.websocket.WebSocketHandler):
 
 
     def on_message(self, message):
-        print(message)
-        print(len(clients))
         for c in clients:
-            c.write_message(json.dumps(message))
+            c.write_message(message)
 
     def on_close(self):
         print("Websocket Closed")
