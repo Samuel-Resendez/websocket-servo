@@ -14,6 +14,7 @@ curr_data_patterns = [0,0,0,0]
 
 
 
+
 class IndexHandler(tornado.web.RequestHandler):
 
     @tornado.web.asynchronous
@@ -134,8 +135,6 @@ class LeapWebSocket(tornado.websocket.WebSocketHandler):
         return True
 
     def open(self):
-        if self not in clients:
-            clients.append(self)
         print("Websocket Open")
 
 
@@ -146,8 +145,6 @@ class LeapWebSocket(tornado.websocket.WebSocketHandler):
             c.write_message(json.dumps(message))
 
     def on_close(self):
-        if self in clients:
-            clients.remove(self)
         print("Websocket Closed")
 
 
