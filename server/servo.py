@@ -3,6 +3,7 @@
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
+
 import json, math
 
 from tornado.options import define, options, parse_command_line
@@ -36,6 +37,7 @@ class IndexHandler(tornado.web.RequestHandler):
 
 class dataPatternHandler(tornado.web.RequestHandler):
 
+    @tornado.web.asynchronous
     def get(self):
         self.write("""
         <h2> POST endpoint for pattern handling </h2>
@@ -46,6 +48,7 @@ class dataPatternHandler(tornado.web.RequestHandler):
         are up and which ones aren't. </p>
         """)
 
+    @tornado.web.asynchronous
     def post(self):
         pattern = self.get_argument('pattern_id','No Data Received')
         if pattern == 'No Data Received':
@@ -72,7 +75,7 @@ class dataPatternHandler(tornado.web.RequestHandler):
 
 
 class leapRotationHandler(tornado.web.RequestHandler):
-
+    @tornado.web.asynchronous
     def post(self):
         zoomFac = self.get_argument('zoomFactor','No Data Received')
         if zoomFac == 'No Data Received':
@@ -97,7 +100,7 @@ class leapRotationHandler(tornado.web.RequestHandler):
         self.finish()
 
 class alexaPositionDeltaHandler(tornado.web.RequestHandler):
-
+    @tornado.web.asynchronous
     def post(self):
         position = self.get_argument('zoom_delta','No Data Received')
         if position == 'No Data Received':
@@ -112,7 +115,7 @@ class alexaPositionDeltaHandler(tornado.web.RequestHandler):
             self.finish()
 
 class MapStyleHandler(tornado.web.RequestHandler):
-
+    @tornado.web.asynchronous
     def post(self):
         map_style = self.get_argument("map_style","No Data Received")
         if map_style == "No Data Received":
@@ -130,7 +133,7 @@ class MapStyleHandler(tornado.web.RequestHandler):
         self.write("Success: 200")
         self.finish()
 
-
+    @tornado.web.asynchronous
     def get(self):
         self.write("""
         <h1> POST endpoint for Map Style Setting
@@ -142,6 +145,7 @@ class MapStyleHandler(tornado.web.RequestHandler):
 class LeapWebSocket(tornado.websocket.WebSocketHandler):
 
     def check_origin(self, origin):
+
         return True
 
     def open(self):
