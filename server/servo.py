@@ -55,6 +55,15 @@ class leapRotationHandler(tornado.web.RequestHandler):
 
         self.write("200")
         self.finish()
+
+class alexaPositionDeltaHandler(tornado.web.RequestHandler):
+
+    def post(self):
+        position = self.get_argument('zoom_delta','No Data Received')
+        if position == 'No Data Received':
+            self.write("Error Code: 500")
+            self.finish()
+
 class leapPositionHandler(tornado.web.RequestHandler):
     def post(self):
         position = self.get_argument('position','No Data Received')
@@ -62,7 +71,7 @@ class leapPositionHandler(tornado.web.RequestHandler):
             self.write(500)
             self.finish()
         else:
-            position = (7/225)*int(position) + (85/9)
+            position = int((7/225)*int(position) + (85/9))
             if position > 25:
                 position = 25
 
