@@ -62,7 +62,9 @@ class leapPositionHandler(tornado.web.RequestHandler):
             self.write(500)
             self.finish()
         else:
-            position = (1/25)*int(position) + 9
+            position = (7/225)*int(position) + (85/9)
+            if position > 25:
+                position = 25
 
             dat_dict = {'zoomValue':position}
             for c in clients:
